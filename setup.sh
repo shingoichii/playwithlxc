@@ -1,6 +1,11 @@
 #! /bin/sh
-USERNAME=${USERNAME:-ksuser}
-PASSWORD=${PASSWORD:-screencast}
+case $# in
+2) ;;
+*) echo usage $0 username password; exit 1;;
+esac
+
+USERNAME=$1
+PASSWORD=$2
 
 sed -i '/^PasswordAuthentication/s/^/#/' /etc/ssh/sshd_config
 

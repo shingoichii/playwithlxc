@@ -11,6 +11,12 @@ DEBUG = True
 LXC = "/snap/bin/lxc"
 LINUX = "ubuntu:18.04"
 SCRIPT = "setup.sh"
+SSHPORT = 22
+WWWPORT = 80
+APPPORT = 4011
+SSH_FORWARD_BASE = 20000 + SSHPORT
+WWW_FORWARD_BASE = 20000 + WWWPORT
+APP_FORWARD_BASE = 20000 + APPPORT % 100
 
 N = 40
 D = 10
@@ -40,15 +46,26 @@ def launch(u):
     cmd = "{} launch {} {}".format( LXC, LINUX, u[1])
     doit(cmd)
 
+def proxycmd(id, container, dev, base, port):
+    address = "1.1.1.1"
+    return "{} config device add {} {} proxy listen=tcp:0.0.0.0:{} connect=tcp:{}:{} bind=host".format(
+        LXC, container, dev, base + id * 100, address, port)
+
 def setup(u):
     cmd = "{} file push {} {}/tmp/{} --mode 0744".format( LXC, SCRIPT, u[1], SCRIPT )
     doit(cmd)
-    cmd = "{} exec {} USERNAME={} PASSWORD='{}' /tmp/{}".format ( LXC, u[1], u[2], u[3], SCRIPT )
+    cmd = "{} exec {} USERNAME={} PASSWORD='{}' /tmp/{}".format( LXC, u[1], u[2], u[3], SCRIPT )
+    doit(cmd)
+    cmd = proxycmd(u[0], u[1], "ssh", SSH_FORWARD_BASE, SSHPORT)
+    doit(cmd)
+    cmd = proxycmd(u[0], u[1], "http", WWW_FORWARD_BASE, WWWPORT)
+    doit(cmd)
+    cmd = proxycmd(u[0], u[1], "app", APP_FORWARD_BASE, APPPORT)
     doit(cmd)
 
 def printuserlist():
     for t in userlist:
-        num, container, user, pw = t;
+        num, container, user, pw = t
         print(num, container, user, pw)
 
 def main():
