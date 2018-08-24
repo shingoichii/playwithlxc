@@ -7,7 +7,7 @@ esac
 USERNAME=$1
 PASSWORD=$2
 
-sed -i '/^PasswordAuthentication/s/^/#/' /etc/ssh/sshd_config
+sed -i '/^PasswordAuthentication/s/no$/yes/' /etc/ssh/sshd_config
 
 useradd -b /home -m -s /bin/bash $USERNAME
 adduser $USERNAME sudo

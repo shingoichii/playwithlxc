@@ -4,6 +4,7 @@
 import os
 import random
 import string
+import pylxd
 
 DEBUG = True
 #DEBUG = False
@@ -25,7 +26,7 @@ alphabets = string.ascii_letters + string.digits + string.punctuation + string.a
 alphabets = alphabets.replace('1', '0')
 alphabets = alphabets.replace('l', 'L')
 alphabets = alphabets.replace('$', '%')
-alphabets = alphabets.replace(':', ';')
+alphabets = alphabets.replace('"', '=')
 alphabets = alphabets.replace('\'', '?')
 
 def doit(cmd):
@@ -46,22 +47,31 @@ def launch(u):
     cmd = "{} launch {} {}".format( LXC, LINUX, u[1])
     doit(cmd)
 
-def proxycmd(id, container, dev, base, port):
+def proxycmd(id, container, dev, base, address, port):
     address = "1.1.1.1"
     return "{} config device add {} {} proxy listen=tcp:0.0.0.0:{} connect=tcp:{}:{} bind=host".format(
         LXC, container, dev, base + id * 100, address, port)
+
+def setup_network():
+    client = pylxd.Client()
+    for c in client.containers.all():
+        container_name = c.name
+        container_address = c.state().network['eth0']['addresses'][0]['address']
+        cmd = proxycmd(u[0], u[1], "ssh", SSH_FORWARD_BASE, container_address, SSHPORT)
+        doit(cmd)
+        cmd = proxycmd(u[0], u[1], "http", WWW_FORWARD_BASE,
+                       container_address, WWWPORT)
+        doit(cmd)
+        cmd = proxycmd(u[0], u[1], "app", APP_FORWARD_BASE,
+                       container_address, APPPORT)
+        doit(cmd)
 
 def setup(u):
     cmd = "{} file push {} {}/tmp/{} --mode 0744".format( LXC, SCRIPT, u[1], SCRIPT )
     doit(cmd)
     cmd = "{} exec {} USERNAME={} PASSWORD='{}' /tmp/{}".format( LXC, u[1], u[2], u[3], SCRIPT )
     doit(cmd)
-    cmd = proxycmd(u[0], u[1], "ssh", SSH_FORWARD_BASE, SSHPORT)
-    doit(cmd)
-    cmd = proxycmd(u[0], u[1], "http", WWW_FORWARD_BASE, WWWPORT)
-    doit(cmd)
-    cmd = proxycmd(u[0], u[1], "app", APP_FORWARD_BASE, APPPORT)
-    doit(cmd)
+    setup_network()
 
 def printuserlist():
     for t in userlist:
