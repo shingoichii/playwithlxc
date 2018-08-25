@@ -20,7 +20,7 @@ SSH_FORWARD_BASE = 20000 + SSHPORT
 WWW_FORWARD_BASE = 20000 + WWWPORT
 APP_FORWARD_BASE = 20000 + APPPORT % 100
 
-N = 4
+N = 40
 D = 10
 alphabets = string.ascii_letters + string.digits + string.ascii_letters
 # hack
@@ -75,11 +75,14 @@ def setup(u):
             break
     #print(container_name)
     #print(c.state().network['eth0']['addresses'])
-    for a in c.state().network['eth0']['addresses']:
-        #print(a['family'])
-        if a['family'] == 'inet':
-            container_address = a['address']
-            break
+    container_address = ""
+    while container_address == "":
+        time.sleep(1)
+        for a in c.state().network['eth0']['addresses']:
+            #print(a['family'])
+            if a['family'] == 'inet':
+                container_address = a['address']
+                break
     #print(container_address)
     proxyport = getproxyport(num, SSH_FORWARD_BASE)
     cmd = proxycmd(num, container_name, "ssh", proxyport, container_address, SSHPORT)
@@ -99,10 +102,18 @@ def printuserlist():
         num, container, user, pw, ssh, www, app = t
         print(num, container, user, pw, ssh, www, app)
 
+def waiting(container_name, client):
+    while True:
+        for c in client.containers.all():
+            if c.name == container_name:
+                return
+        time.sleep(1)
+    
 def main():
+    client = pylxd.Client()
     for u in userlist:
         launch(u)
-        time.sleep(5)
+        waiting(u[1], client)
         setup(u)
     printuserlist()
 
