@@ -1,4 +1,4 @@
-# LXCで40人分のLinuxログイン環境を作ってみた
+# LXDで40人分のLinuxログイン環境を作ってみた
 
 * starter.sh --- 主スクリプト。標準入力からuserlist.txt相当の内容を読ませる
 * mkuserlist.py --- userlist.txtを生成
