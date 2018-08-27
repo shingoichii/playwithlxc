@@ -7,7 +7,7 @@ import random
 import string
 
 N = 40 # number of users; 1 <= N <= 99
-D = 10 # password length
+D = 12 # password length
 
 SSHPORT = 22
 WWWPORT = 80

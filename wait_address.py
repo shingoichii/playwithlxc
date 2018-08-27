@@ -28,7 +28,9 @@ while container_address == "":
             container_address = a['address']
             break
 
-return container_address
+print(container_address)
+sys.exit(0)
+
 
 
 

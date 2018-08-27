@@ -14,5 +14,5 @@ client = pylxd.Client()
 while True:
     for c in client.containers.all():
         if c.name == container_name:
-            return
+            sys.exit(0)
     time.sleep(1)
