@@ -1,7 +1,7 @@
 # LXDで40人分のLinuxログイン環境を作ってみた
 
-* starter.sh --- 主スクリプト。標準入力からuserlist.txt相当の内容を読ませる
-* mkuserlist.py --- userlist.txtを生成
+* starter.sh --- 主スクリプト。標準入力からユーザリストを読ませる
+* mkuserlist.py --- ユーザリストを生成
 * userlist.txt --- 生成されたユーザリストの例
 * setup.sh --- starter.sh内部で使用。コンテナにpushしてユーザ設定を行う
 * wait_container.py --- starter.sh内部で使用。コンテナが立ち上がるのを待つ
