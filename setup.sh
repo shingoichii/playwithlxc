@@ -1,15 +1,16 @@
 #! /bin/sh
 case $# in
-2) ;;
-*) echo usage $0 username password; exit 1;;
+3) ;;
+*) echo usage $0 username password homedir; exit 1;;
 esac
 
 USERNAME=$1
 PASSWORD=$2
+HOMEDIR=$3
 
 sed -i '/^PasswordAuthentication/s/no$/yes/' /etc/ssh/sshd_config
 
-useradd -b /home -m -s /bin/bash $USERNAME
+useradd -b $HOMEDIR -m -s /bin/bash $USERNAME
 adduser $USERNAME sudo
 echo ${USERNAME}:${PASSWORD} | chpasswd
 

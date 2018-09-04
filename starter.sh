@@ -8,6 +8,9 @@ LXC="/snap/bin/lxc"
 LINUX="ubuntu:18.04"
 SCRIPT="setup.sh"
 
+HOMEDIRBASE=/home/prj   # host
+homedirbase=/home/ks    # container
+
 SSHPORT=22
 WWWPORT=80
 APPPORT=4011
@@ -51,8 +54,9 @@ while read n container user password sshport wwwport appport
 do
     doit "$LXC launch $LINUX $container"
     waitit container $container
+    doit "$LXC config device add ${container} kshome disk source=$HOMEDIRBASE/$n path=$homedirbase"
     doit "$LXC file push $SCRIPT ${container}/tmp/${SCRIPT}"
-    doit "$LXC exec ${container} -n -- bash /tmp/${SCRIPT} $user $password"
+    doit "$LXC exec ${container} -n -- bash /tmp/${SCRIPT} $user $password $homedirbase"
     # -n needed for not stealing stdin
     waitit address $container
     doit "$LXC config device add $container ssh proxy listen=tcp:0.0.0.0:${sshport} connect=tcp:${address}:${SSHPORT}"
