@@ -28,7 +28,7 @@ def genpw():
 def genport(num, port):
     return BASE + port % 100 + num * 100
 
-userlist = [ (n, "exp{:02}".format(n), "ksuser{:02}".format(n), genpw(),
+userlist = [ ("{:02}".format(n), "exp{:02}".format(n), "ksuser{:02}".format(n), genpw(),
                 genport(n, SSHPORT), genport(n, WWWPORT), genport(n, APPPORT)) for n in range(N) ]
 
 for t in userlist:
