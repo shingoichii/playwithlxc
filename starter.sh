@@ -10,6 +10,7 @@ SCRIPT="setup.sh"
 
 HOMEDIRBASE=/home/prj   # host
 homedirbase=/home/ks    # container
+uid=`id -u ksuser`
 
 SSHPORT=22
 WWWPORT=80
@@ -54,6 +55,7 @@ while read n container user password sshport wwwport appport
 do
     doit "$LXC launch $LINUX $container"
     waitit container $container
+    doit "$LXC config set ${container} raw.idmap \"both $uid 0\""
     doit "$LXC config device add ${container} kshome disk source=$HOMEDIRBASE/$n path=$homedirbase"
     doit "$LXC file push $SCRIPT ${container}/tmp/${SCRIPT}"
     doit "$LXC exec ${container} -n -- bash /tmp/${SCRIPT} $user $password $homedirbase"
