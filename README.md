@@ -7,6 +7,7 @@
 * wait_container.py --- starter.sh内部で使用。コンテナが立ち上がるのを待つ
 * wait_address.py --- starter.sh内部で使用。コンテナにIPアドレスが割り当てられるのを待つ
 * purgeall.sh --- 生成されたコンテナを一気にstop & deleteする
+* prephome.sh --- コンテナ用のホームディレクトリを作る
 * addr.py --- 試行錯誤していた時にテスト用に作ったもの
 * wh.sh --- 試行錯誤していた時にテスト用に作ったもの
 * starter.py --- 試行錯誤していた時にテスト用に作ったもの。一応動く
