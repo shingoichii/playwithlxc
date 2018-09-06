@@ -22,6 +22,7 @@ Ubuntu 18.04を仮定
 $ sudo snap install lxd
 $ sudo apt install btrfs-progs
 ```
+Ubuntu serverにはlxd 3.0系が入っているが、proxyの機能を使うので新しいsnap版を入れる。
 
 ### lxd初期化
 ```
@@ -40,7 +41,9 @@ $ sudo adduser --no-create-home --disabled-login --gecos "" ksuser
 $ id ksuser
 uid=1001(ksuser) gid=1001(ksuser) groups=1001(ksuser)
 $ sudo vi /etc/subuid
-（root:1001:1を追加）
+（uidが1001なら
+root:1001:1
+を追加）
 $ sudo vi /etc/subgid
 （同上）
 ```
@@ -55,7 +58,7 @@ $ sudo ./prephome.sh
 ```
 
 `/home/prj/00`から`/home/prj/39`が作られる
-（user/groupはksuser）。
+（user/groupは上でサーバに追加したksuser）。
 それぞれが各コンテナの`/home/ks`にmountされる。
 その下にコンテナ内のユーザのホームディレクトリが作られる。
 
@@ -73,5 +76,7 @@ $ lxc exec exp00 bash
 ### 他のホストからの確認
 ```
 $ ssh [サーバのIPアドレス] -p 20022 -l ksuser00
-（ユーザ名、ポート番号、初期パスワードはuserlist.txtにあり）
+（ユーザ名、ポート番号、初期パスワードはuserlist.txtにある）
 ```
+サーバポートは22 (ssh), 80 (http)のほか4011をproxyで外部に番号を変えて見せている。
+対応する外部ポートはuserlist.txtにある。
