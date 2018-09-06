@@ -1,5 +1,5 @@
 #! /bin/sh
-set -x
+#set -x
 
 #DEBUG=True
 DEBUG=False
@@ -51,10 +51,12 @@ waitit()
     return 0
 }
 
+#### main ####
 while read n container user password sshport wwwport appport
 do
 #    doit "$LXC launch $LINUX $container"
     doit "$LXC init $LINUX $container"
+    # uid/gid mapping config must be set before starting container
     doit "$LXC config set ${container} raw.idmap \"both $uid 0\""
     doit "$LXC start $container"
     waitit container $container
