@@ -80,3 +80,11 @@ $ ssh [サーバのIPアドレス] -p 20022 -l ksuser00
 ```
 サーバポートは22 (ssh), 80 (http)のほか4011をproxyで外部に番号を変えて見せている。
 対応する外部ポートはuserlist.txtにある。
+
+### 初期化
+実習中ミスして最初からやり直したくなった時は
+```
+$ lxc stop exp00
+$ lxc delete exp00
+$ grep exp00 userlist.txt | ./starter.sh
+```
