@@ -88,3 +88,4 @@ $ lxc stop exp00
 $ lxc delete exp00
 $ grep exp00 userlist.txt | ./starter.sh
 ```
+クライアント側で`.ssh/known_hosts`を消去してやり直す。
